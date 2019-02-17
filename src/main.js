@@ -3,12 +3,13 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import i18n from './i18n'
-import '@/plugins/element.js'
+import './mock'
+import './plugins/element.js'
 
 // Whether to enable mock data.
-if (process.env.NODE_ENV === 'development') {
-  require('./mock')
-}
+// if (process.env.NODE_ENV === 'development') {
+//   require('./mock')
+// }
 
 Vue.config.productionTip = false
 
