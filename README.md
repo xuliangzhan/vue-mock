@@ -1,3 +1,3 @@
 # Example
 
-[Run](https://xuliangzhan.github.io/vue-mock/)
+[Run](https://xuliangzhan.github.io/vue-mock-template/)

@@ -1,5 +1,5 @@
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production' ? '/vue-mock/' : '/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/vue-mock-template/' : '/',
   outputDir: 'docs',
   pluginOptions: {
     i18n: {
