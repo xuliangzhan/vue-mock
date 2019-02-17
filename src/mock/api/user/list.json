@@ -1,0 +1,12 @@
+{
+  "!return|array(2-10)": {
+    "id|number": "{{ $index+1 }}",
+    "name": "test{{ $index }}",
+    "email": "{{ random.repeat('abcdefg',5,20) }}@{{ random.repeat(['qq','163'],1) }}.{{ random.repeat(['com','net'],1) }}",
+    "age|number": "{{ random.num(18,60) }}",
+    "address|random(1)": ["深圳xxx", "北京xxx", "上海xxx", "广州xxx"],
+    "describe": "{{ random.repeat('用户信息',10,100) }}",
+    "createDate": "{{ random.date('2018-01-01','2018-06-20') }}",
+    "updateTime": "{{ random.time('2018-01-01','2018-06-20') }}"
+  }
+}
