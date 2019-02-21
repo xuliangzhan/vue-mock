@@ -1,5 +1,5 @@
 {
-  "!return|array(2-10)": {
+  "!return|array(5-10)": {
     "id|number": "{{ $index+1 }}",
     "name": "test{{ $index }}",
     "email": "{{ random.repeat('abcdefg',5,20) }}@{{ random.repeat(['qq','163'],1) }}.{{ random.repeat(['com','net'],1) }}",

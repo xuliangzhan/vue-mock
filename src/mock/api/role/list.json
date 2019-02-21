@@ -1,5 +1,5 @@
 {
-  "!return|array(2-10)": {
+  "!return|array(5-10)": {
     "id|number": "{{ $index+1 }}",
     "name": "role_{{ $index }}",
     "describe": "{{ random.repeat('角色描述',10,100) }}",
