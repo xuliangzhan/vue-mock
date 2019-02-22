@@ -10,6 +10,7 @@
 
     <el-editable
       ref="editable"
+      class="role-table"
       stripe
       border
       height="534"
@@ -134,10 +135,11 @@ export default {
       }
     },
     pendingRemoveEvent () {
-      if (this.multipleSelection.length) {
+      let selection = this.multipleSelection
+      if (selection.length) {
         let plus = []
         let minus = []
-        this.multipleSelection.forEach(data => {
+        selection.forEach(data => {
           if (this.pendingRemoveList.some(item => data === item)) {
             minus.push(data)
           } else {
@@ -158,14 +160,15 @@ export default {
       }
     },
     deleteListEvent () {
-      if (this.multipleSelection.length) {
+      let selection = this.multipleSelection
+      if (selection.length) {
         MessageBox.confirm('此操作将永久删除该文件, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           this.loading = true
-          XEAjax.postJSON('/api/role/delete', { removeRecords: this.multipleSelection }).then(data => {
+          XEAjax.postJSON('/api/role/delete', { removeRecords: selection }).then(data => {
             Message({
               type: 'success',
               message: '删除成功!'
@@ -215,3 +218,10 @@ export default {
   }
 }
 </script>
+
+<style>
+.role-table .delete-row {
+  color: #f56c6c;
+  text-decoration: line-through;
+}
+</style>
