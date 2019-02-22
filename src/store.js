@@ -3,14 +3,23 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   state: {
-
+    click: null
+  },
+  getters: {
+    globalClick: state => state.click
   },
   mutations: {
-
+    setEvent (state, evnt) {
+      state[evnt.type] = evnt
+    }
   },
   actions: {
 
   }
 })
+
+window.addEventListener('click', evnt => store.commit('setEvent', evnt))
+
+export default store

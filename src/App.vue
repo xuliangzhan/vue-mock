@@ -13,16 +13,16 @@
                 <i class="el-icon-location"></i>
                 <span>用户信息</span>
               </template>
-              <el-menu-item index="/userList">默认列表</el-menu-item>
-              <el-menu-item index="/userPageList">分页列表</el-menu-item>
+              <el-menu-item index="/userList">最新用户</el-menu-item>
+              <el-menu-item index="/userPageList">用户管理</el-menu-item>
             </el-submenu>
             <el-submenu index="2">
               <template slot="title">
                 <i class="el-icon-location"></i>
                 <span>角色信息</span>
               </template>
-              <el-menu-item index="/roleList">默认列表</el-menu-item>
-              <el-menu-item index="/rolePageList">分页列表</el-menu-item>
+              <el-menu-item index="/roleList">最新角色</el-menu-item>
+              <el-menu-item index="/rolePageList">角色管理</el-menu-item>
             </el-submenu>
           </el-menu>
         </el-aside>

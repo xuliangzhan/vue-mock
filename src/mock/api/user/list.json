@@ -1,12 +1,11 @@
 {
-  "!return|array(5-10)": {
+  "!return|array(100-500)": {
     "id|number": "{{ $index+1 }}",
     "name": "test{{ $index }}",
     "email": "{{ random.repeat('abcdefg',5,20) }}@{{ random.repeat(['qq','163'],1) }}.{{ random.repeat(['com','net'],1) }}",
-    "age|number": "{{ random.num(18,60) }}",
-    "address|random(1)": ["深圳xxx", "北京xxx", "上海xxx", "广州xxx"],
-    "describe": "{{ random.repeat('用户信息',10,100) }}",
-    "createDate": "{{ random.date('2018-01-01','2018-06-20') }}",
-    "updateTime": "{{ random.time('2018-01-01','2018-06-20') }}"
+    "age|number": "{{ random.num(18,35) }}",
+    "describe": "{{ random.repeat('用户信息',4,50) }}",
+    "createDate|number": "{{ random.time('2019-01-01','2019-02-20') }}",
+    "updateTime|number": "{{ random.time('2019-01-01','2019-02-20') }}"
   }
 }

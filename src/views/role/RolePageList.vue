@@ -2,37 +2,55 @@
   <div
     class="home"
     v-loading="loading">
-    <el-table
-      :data="list"
+
+    <el-button size="mini" @click="insertEvent()">新增</el-button>
+    <el-button size="mini" @click="pendingRemoveEvent()">标记/取消删除</el-button>
+    <el-button size="mini" @click="deleteListEvent()">删除选中</el-button>
+    <el-button size="mini" @click="saveEvent()">保存</el-button>
+
+    <el-editable
+      ref="editable"
       stripe
       border
       height="534"
-      style="width: 100%">
-      <el-table-column
+      size="small"
+      style="width: 100%"
+      :row-class-name="tableRowClassName"
+      @selection-change="handleSelectionChange"
+      :edit-rules="validRules"
+      :edit-config="{trigger: 'click', mode: 'cell'}">
+      <el-editable-column
+        type="selection"
+        width="55">
+      </el-editable-column>
+      <el-editable-column
         prop="id"
         label="ID"
         width="80">
-      </el-table-column>
-      <el-table-column
+      </el-editable-column>
+      <el-editable-column
         prop="name"
-        label="角色名称">
-      </el-table-column>
-      <el-table-column
+        label="角色名称"
+        show-overflow-tooltip
+        :edit-render="{name: 'ElInput', attrs: {placeholder: '请输入角色名称！'}}">
+      </el-editable-column>
+      <el-editable-column
         prop="createDate"
         label="创建日期"
-        show-overflow-tooltip>
-      </el-table-column>
-      <el-table-column
+        :formatter="formatColumnDate">
+      </el-editable-column>
+      <el-editable-column
         prop="updateTime"
-        label="更新时间"
-        show-overflow-tooltip>
-      </el-table-column>
-      <el-table-column
+        label="最后更新时间"
+        :formatter="formatColumnDate">
+      </el-editable-column>
+      <el-editable-column
         prop="describe"
         label="说明"
-        show-overflow-tooltip>
-      </el-table-column>
-    </el-table>
+        show-overflow-tooltip
+        :edit-render="{name: 'ElInput'}">
+      </el-editable-column>
+    </el-editable>
 
     <el-pagination
       class="my-pagination"
@@ -48,17 +66,29 @@
 </template>
 
 <script>
+import XEUtils from 'xe-utils'
 import XEAjax from 'xe-ajax'
+import { MessageBox, Message } from 'element-ui'
 
 export default {
   data () {
     return {
       loading: false,
-      list: [],
+      multipleSelection: [],
+      pendingRemoveList: [],
       pageVO: {
         currentPage: 1,
         pageSize: 10,
         totalResult: 0
+      },
+      validRules: {
+        name: [
+          { required: true, message: '请写角色名称！', trigger: 'change' },
+          { max: 30, message: '最多30个字符！', trigger: 'change' }
+        ],
+        describe: [
+          { max: 200, message: '最多100个字符！', trigger: 'change' }
+        ]
       }
     }
   },
@@ -76,12 +106,110 @@ export default {
     },
     findList () {
       this.loading = true
+      this.pendingRemoveList = []
       XEAjax.getJSON(`/api/role/page/list/${this.pageVO.pageSize}/${this.pageVO.currentPage}`).then(({ page, result }) => {
         this.pageVO.totalResult = page.totalResult
-        this.list = result
+        this.$refs.editable.reload(result)
         this.loading = false
       }).catch(e => {
         this.loading = false
+      })
+    },
+    formatColumnDate (row, column, cellValue, index) {
+      return XEUtils.toDateString(cellValue)
+    },
+    handleSelectionChange (val) {
+      this.multipleSelection = val
+    },
+    tableRowClassName ({ row, rowIndex }) {
+      if (this.pendingRemoveList.some(item => item === row)) {
+        return 'delete-row'
+      }
+      return ''
+    },
+    insertEvent () {
+      if (!this.$refs.editable.checkValid().error) {
+        let row = this.$refs.editable.insert()
+        this.$nextTick(() => this.$refs.editable.validateRow(row).catch(e => e))
+      }
+    },
+    pendingRemoveEvent () {
+      if (this.multipleSelection.length) {
+        let plus = []
+        let minus = []
+        this.multipleSelection.forEach(data => {
+          if (this.pendingRemoveList.some(item => data === item)) {
+            minus.push(data)
+          } else {
+            plus.push(data)
+          }
+        })
+        if (minus.length) {
+          this.pendingRemoveList = this.pendingRemoveList.filter(item => minus.some(data => data !== item)).concat(plus)
+        } else if (plus) {
+          this.pendingRemoveList = this.pendingRemoveList.concat(plus)
+        }
+        this.$refs.editable.clearSelection()
+      } else {
+        Message({
+          type: 'info',
+          message: '请至少选择一条数据！'
+        })
+      }
+    },
+    deleteListEvent () {
+      if (this.multipleSelection.length) {
+        MessageBox.confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.loading = true
+          XEAjax.postJSON('/api/role/delete', { removeRecords: this.multipleSelection }).then(data => {
+            Message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.findList()
+          }).catch(e => {
+            this.loading = false
+          })
+        }).catch(() => {
+          Message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+      } else {
+        Message({
+          type: 'info',
+          message: '请至少选择一条数据！'
+        })
+      }
+    },
+    saveEvent () {
+      this.$refs.editable.validate(valid => {
+        if (valid) {
+          let removeRecords = this.pendingRemoveList
+          let { insertRecords, updateRecords } = this.$refs.editable.getAllRecords()
+          if (insertRecords.length || removeRecords.length || updateRecords.length) {
+            this.loading = true
+            XEAjax.postJSON('/api/role/save', { insertRecords, removeRecords, updateRecords }).then(data => {
+              Message({
+                type: 'success',
+                message: '保存成功!'
+              })
+              this.findList()
+            }).catch(e => {
+              this.loading = false
+            })
+          } else {
+            Message({
+              type: 'info',
+              message: '数据未改动！'
+            })
+          }
+        }
       })
     }
   }
