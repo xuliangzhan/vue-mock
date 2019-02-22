@@ -1,3 +1,3 @@
-# 使用 vue + element-ui + xe-ajax + mock
+# Demo
 
 [Run](https://xuliangzhan.github.io/vue-mock-template/)
