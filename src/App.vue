@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <el-container>
-      <el-header>Header</el-header>
+      <el-header>
+        <a href="https://github.com/xuliangzhan/vue-mock-template">查看代码</a>
+      </el-header>
       <el-container>
         <el-aside width="200px">
           <el-menu
