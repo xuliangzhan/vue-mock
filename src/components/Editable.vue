@@ -1,15 +1,11 @@
 <template>
-  <el-table
-    ref="refElTable"
-    v-bind="attrs"
-    v-on="events">
+  <el-table ref="refElTable" v-bind="attrs" v-on="events">
     <slot></slot>
   </el-table>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import { Table } from 'element-ui'
 import XEUtils from 'xe-utils'
 
 export default {
@@ -50,9 +46,6 @@ export default {
     summaryMethod: Function,
     selectOnIndeterminate: { type: Boolean, default: true },
     spanMethod: Function
-  },
-  components: {
-    ElTable: Table
   },
   provide () {
     return {
@@ -136,13 +129,14 @@ export default {
     },
     configs () {
       let tipConf = this.editConfig ? (this.editConfig.validTooltip || {}) : {}
-      return Object.assign({
+      let conf = Object.assign({
         trigger: 'click',
         showIcon: true,
         showStatus: true,
         mode: 'cell',
         useDefaultValidTip: false,
-        autoClearActive: true
+        autoClearActive: true,
+        autoScrollIntoView: false
       }, this.editConfig, {
         validTooltip: Object.assign({
           disabled: false,
@@ -153,6 +147,7 @@ export default {
           popperClass: ['editable-valid_tooltip'].concat(tipConf.popperClass ? tipConf.popperClass.split(' ') : []).join(' ')
         })
       })
+      return conf
     }
   },
   watch: {
@@ -394,13 +389,13 @@ export default {
           }
           if (this.configs.trigger === type) {
             this._triggerActive(row, column, cell, event)
-            if (row && this.configs.mode === 'row') {
+            if (this.configs.mode === 'row') {
               this._validRowRules('change', row).catch(({ rule, row, column, cell }) => this._toValidError(rule, row, column, cell))
             } else {
-              this._validColRules('change', row, column).catch(rule => this._toValidError(rule, row, column, cell))
+              this._validCellRules('change', row, column).catch(rule => this._toValidError(rule, row, column, cell))
             }
           } else {
-            if (row.editActive !== column.property) {
+            if (this.configs.mode === 'cell' && row.editActive !== column.property) {
               this._clearActiveData()
               row.checked = column.property
             }
@@ -517,6 +512,15 @@ export default {
         inpElem.focus()
       }
     },
+    _scrollIntoView (cell) {
+      if (this.configs.autoScrollIntoView && this.isValidActivate && cell) {
+        if (cell.scrollIntoViewIfNeeded) {
+          cell.scrollIntoViewIfNeeded()
+        } else if (cell.scrollIntoView) {
+          cell.scrollIntoView()
+        }
+      }
+    },
     _isRowDataChange (row, column) {
       let columns = this.$refs.refElTable.columns
       if (column) {
@@ -539,6 +543,7 @@ export default {
         this.lastActive = { row, column, cell }
         row.editActive = column.property
         this.$nextTick(() => {
+          this._scrollIntoView(cell)
           this._setCellFocus(cell)
           if (row.editActive !== column.property) {
             this.$emit('edit-active', row.data, column, cell, event)
@@ -586,14 +591,14 @@ export default {
         let datas = this.tableData
         let columns = this.$refs.refElTable.columns
         let ruleKeys = Object.keys(editRules)
-        let trElems = this.$el.querySelectorAll('.editable-row')
-        let index = XEUtils.findIndexOf(datas, item => item === row)
+        let rowIndex = XEUtils.findIndexOf(datas, item => item === row)
         this._clearValidError(row)
-        columns.forEach((column, cIndex) => {
+        columns.forEach((column, columnIndex) => {
           if (ruleKeys.includes(column.property)) {
             validPromise = validPromise.then(rest => new Promise((resolve, reject) => {
-              this._validColRules('all', row, column).then(resolve).catch(rule => {
-                let rest = { rule, row, column, cell: trElems[index].children[cIndex] }
+              this._validCellRules('all', row, column).then(resolve).catch(rule => {
+                let { cell } = this._getColumnByRowIndex(rowIndex, column.property)
+                let rest = { rule, row, column, cell }
                 return reject(rest)
               })
             }))
@@ -611,7 +616,7 @@ export default {
      *
      * 参数：required=Boolean 是否必填，min=Number 最小长度，max=Number 最大长度，validator=Function(rule, value, callback) 自定义校验，trigger=blur|change 触发方式
      */
-    _validColRules (type, row, column) {
+    _validCellRules (type, row, column) {
       let property = column.property
       let validPromise = Promise.resolve()
       if (property && !XEUtils.isEmpty(this.editRules)) {
@@ -661,6 +666,34 @@ export default {
       }
       return validPromise
     },
+    _getColumnByRowIndex (rowIndex, property) {
+      let row = this.tableData[rowIndex]
+      let columns = this.$refs.refElTable.columns
+      let columnIndex = XEUtils.findIndexOf(columns, item => property ? property === item.property : item.property)
+      let column = columns[columnIndex]
+      let trElemList = this.$el.querySelectorAll('.el-table__body-wrapper .editable-row')
+      let trElem = trElemList[rowIndex]
+      let cell = trElem.querySelector(`.${column.id}`)
+      return { row, rowIndex, column, columnIndex, cell }
+    },
+    _toActiveRow (record, prop, preventDefault) {
+      let rowIndex = XEUtils.findIndexOf(this.tableData, item => item.data === record)
+      let { row, column, cell } = this._getColumnByRowIndex(rowIndex, prop)
+      if (row && column) {
+        this.isValidActivate = true
+        this.isManualActivate = preventDefault !== false
+        this.datas.forEach(row => {
+          if (row.data !== record) {
+            this._clearValidError(row)
+          }
+        })
+        this._validRowRules('all', row)
+          .then(valid => this._triggerActive(row, column, cell, { type: 'edit' }))
+          .catch(({ rule, row, column, cell }) => this._toValidError(rule, row, column, cell))
+        return true
+      }
+      return false
+    },
     _validActiveCell () {
       if (this.lastActive && !XEUtils.isEmpty(this.editRules)) {
         let { row, column, cell } = this.lastActive
@@ -671,7 +704,7 @@ export default {
             return Promise.reject(rest)
           })
         } else {
-          return this._validColRules('blur', row, column).catch(rule => {
+          return this._validCellRules('blur', row, column).catch(rule => {
             let rest = { rule, row, column, cell }
             this._toValidError(rule, row, column, cell)
             return Promise.reject(rest)
@@ -689,20 +722,11 @@ export default {
       row.validRule = rule
       row.validActive = column.property
       this._triggerActive(row, column, cell, { type: 'valid' })
-      this.$nextTick(() => {
-        if (this.configs.useDefaultValidTip && this.isValidActivate && cell) {
-          if (cell.scrollIntoViewIfNeeded) {
-            cell.scrollIntoViewIfNeeded()
-          } else if (cell.scrollIntoView) {
-            cell.scrollIntoView()
-          }
-        }
-        // 解决 ElTooltip 默认无法自动弹出问题
-        setTimeout(() => {
-          row.showValidMsg = true
-        }, 50)
-      })
-      this.$emit('valid-error', rule, row, column)
+      // 解决 ElTooltip 默认无法自动弹出问题
+      setTimeout(() => {
+        row.showValidMsg = true
+      }, 50)
+      this.$emit('valid-error', rule, row, column, cell)
     },
     _deleteData (index) {
       if (index > -1) {
@@ -723,6 +747,22 @@ export default {
     },
     /***************************/
     /* Interior methods end    */
+    /***************************/
+
+    /***************************/
+    /* Discard methods start   */
+    /***************************/
+    isActiveRow (record) {
+      return this.hasActiveRow(record)
+    },
+    getActiveInfo () {
+      return this.getActiveRow()
+    },
+    isRowChange (record, property) {
+      return this.hasRowChange(record, property)
+    },
+    /***************************/
+    /* Discard methods end     */
     /***************************/
 
     /***************************/
@@ -851,39 +891,30 @@ export default {
       this._restoreTooltip()
     },
     /**
-     * 指定某一行为激活状态
-     * 只有当指定为 mode='row' 行编辑模式时
-     * 才可以根据索引激活行为编辑状态
+     * 激活指定某一行为可编辑状态
+     * 只有当指定为 mode='row' 模式时有效
      * 如果 preventDefault=false 不阻止 clearActive 行为
      */
     setActiveRow (record, preventDefault) {
-      let rowIndex = XEUtils.findIndexOf(this.tableData, item => item.data === record)
-      let row = this.tableData[rowIndex]
-      if (rowIndex > -1 && this.configs.mode === 'row') {
-        this.isManualActivate = preventDefault !== false
-        this.datas.forEach(row => {
-          if (row.data !== record) {
-            this._clearValidError(row)
-          }
-        })
-        this._validRowRules('all', row).then(valid => {
-          let columns = this.$refs.refElTable.columns
-          let colIndex = XEUtils.findIndexOf(columns, item => item.property)
-          let column = columns[colIndex]
-          let trElemList = this.$el.querySelectorAll('.el-table__body-wrapper .editable-row')
-          let cell = trElemList[rowIndex].children[colIndex]
-          this._triggerActive(row, column, cell, { type: 'edit' })
-        }).catch(({ rule, row, column, cell }) => {
-          this._toValidError(rule, row, column, cell)
-        })
-        return true
+      if (this.configs.mode === 'row') {
+        return this._toActiveRow(record, null, preventDefault)
       }
       return false
     },
-    isActiveRow (record) {
+    /**
+     * 激活指定某一行的单元格为可编辑状态
+     * 只有当指定为 mode='cell' 模式时有效
+     */
+    setActiveCell (record, prop, preventDefault) {
+      if (this.configs.mode === 'cell') {
+        return this._toActiveRow(record, prop, preventDefault)
+      }
+      return false
+    },
+    hasActiveRow (record) {
       return this.lastActive ? this.lastActive.row.data === record : false
     },
-    getActiveInfo () {
+    getActiveRow () {
       if (this.lastActive) {
         let { row, column } = this.lastActive
         let index = XEUtils.findIndexOf(this.datas, item => item === row)
@@ -894,7 +925,7 @@ export default {
       }
       return null
     },
-    isRowChange (record, property) {
+    hasRowChange (record, property) {
       let row = this.datas.find(item => item.data === record)
       return property ? this._isRowDataChange(row, { property }) : this._isRowDataChange(row)
     },
@@ -905,20 +936,16 @@ export default {
      */
     updateStatus (scope) {
       this.$nextTick(() => {
-        let { $index, _row, column, store } = scope
-        let trElems = store.table.$el.querySelectorAll('.editable-row')
-        if (trElems.length) {
-          let trElem = trElems[$index]
-          let cell = trElem.querySelector(`.${column.id}`)
-          if (cell) {
-            return this._validColRules('change', _row, column).then(rule => {
-              if (this.configs.mode === 'row' ? _row.validActive && _row.validActive === column.property : true) {
-                this._clearValidError(_row)
-              }
-            }).catch(rule => {
-              this._toValidError(rule, _row, column, cell)
-            })
-          }
+        let { $index, column } = scope
+        let { row, cell } = this._getColumnByRowIndex($index, column.property)
+        if (cell) {
+          return this._validCellRules('change', row, column).then(rule => {
+            if (this.configs.mode === 'row' ? row.validActive && row.validActive === column.property : true) {
+              this._clearValidError(row)
+            }
+          }).catch(rule => {
+            this._toValidError(rule, row, column, cell)
+          })
         }
       })
     },
@@ -969,14 +996,14 @@ export default {
         let datas = this.tableData
         let columns = this.$refs.refElTable.columns
         let ruleKeys = Object.keys(editRules)
-        let trElems = this.$el.querySelectorAll('.editable-row')
-        datas.forEach((row, index) => {
+        datas.forEach((row, rowIndex) => {
           this._clearValidError(row)
-          columns.forEach((column, cIndex) => {
+          columns.forEach((column, columnIndex) => {
             if (ruleKeys.includes(column.property)) {
               validPromise = validPromise.then(rest => new Promise((resolve, reject) => {
-                this._validColRules('all', row, column).then(resolve).catch(rule => {
-                  let rest = { rule, row, column, cell: trElems[index].children[cIndex] }
+                this._validCellRules('all', row, column).then(resolve).catch(rule => {
+                  let { cell } = this._getColumnByRowIndex(rowIndex, column.property)
+                  let rest = { rule, row, column, cell }
                   return reject(rest)
                 })
               }))

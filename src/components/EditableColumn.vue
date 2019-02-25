@@ -74,23 +74,6 @@
 
 <script>
 import XEUtils from 'xe-utils'
-import {
-  TableColumn,
-  Autocomplete,
-  Input,
-  Select,
-  Option,
-  Cascader,
-  TimeSelect,
-  TimePicker,
-  DatePicker,
-  InputNumber,
-  Switch,
-  Rate,
-  ColorPicker,
-  Slider,
-  Tooltip
-} from 'element-ui'
 
 export default {
   name: 'ElEditableColumn',
@@ -127,23 +110,6 @@ export default {
     filterMultiple: { type: Boolean, default: true },
     filterMethod: Function,
     filteredValue: Array
-  },
-  components: {
-    ElTableColumn: TableColumn,
-    ElAutocomplete: Autocomplete,
-    ElInput: Input,
-    ElSelect: Select,
-    ElOption: Option,
-    ElCascader: Cascader,
-    ElTimeSelect: TimeSelect,
-    ElTimePicker: TimePicker,
-    ElDatePicker: DatePicker,
-    ElInputNumber: InputNumber,
-    ElSwitch: Switch,
-    ElRate: Rate,
-    ElColorPicker: ColorPicker,
-    ElSlider: Slider,
-    ElTooltip: Tooltip
   },
   inject: [
     '$editable'
@@ -458,6 +424,7 @@ export default {
 /* custom tip */
 .editable .editable-column .editable-valid_error {
   display: none;
+  text-align: left;
 }
 .editable .editable-column.valid-error .el-input__inner,
 .editable .editable-column.valid-error .el-input__inner:focus,
