@@ -798,7 +798,7 @@ export default {
       })
       return content
     },
-    _downloadCsv (opts, content) {
+    _downloadCsc (opts, content) {
       let browse = XEUtils.browse()
       if (navigator.msSaveBlob && window.Blob) {
         navigator.msSaveBlob(new Blob([content], { type: 'text/csv' }), opts.filename)
@@ -1119,7 +1119,7 @@ export default {
       if (opts.filename.indexOf('.csv') === -1) {
         opts.filename += '.csv'
       }
-      this._downloadCsv(opts, this._getCsvContent(opts))
+      this._downloadCsc(opts, this._getCsvContent(opts))
     }
     /***************************/
     /* Public methods end      */
