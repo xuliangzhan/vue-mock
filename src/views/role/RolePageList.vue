@@ -7,6 +7,7 @@
     <el-button size="mini" @click="pendingRemoveEvent()">标记/取消删除</el-button>
     <el-button size="mini" @click="deleteListEvent()">删除选中</el-button>
     <el-button size="mini" @click="saveEvent()">保存</el-button>
+    <el-button size="mini" @click="$refs.editable.exportCsv({filename: 'role.csv'})">导出数据</el-button>
 
     <el-editable
       ref="editable"
