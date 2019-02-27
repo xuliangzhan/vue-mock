@@ -1,6 +1,5 @@
 import Vue from 'vue'
-import Editable from '@/components/editable.vue'
-import EditableColumn from '@/components/editable-column.vue'
+import VueElementExtends from 'vue-element-extends'
+import 'vue-element-extends/lib/index.css'
 
-Vue.component(Editable.name, Editable)
-Vue.component(EditableColumn.name, EditableColumn)
+Vue.use(VueElementExtends)
