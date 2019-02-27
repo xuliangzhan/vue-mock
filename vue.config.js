@@ -1,6 +1,7 @@
 module.exports = {
   publicPath: process.env.NODE_ENV === 'production' ? '/vue-mock-template/' : '/',
   outputDir: 'docs',
+  productionSourceMap: false,
   configureWebpack: {
     performance: {
       hints: false

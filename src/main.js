@@ -5,12 +5,7 @@ import store from './store'
 import i18n from './i18n'
 import './mock'
 import './plugins/element.js'
-
-import Editable from '@/components/Editable.vue'
-import EditableColumn from '@/components/EditableColumn.vue'
-
-Vue.component(Editable.name, Editable)
-Vue.component(EditableColumn.name, EditableColumn)
+import './plugins/element-extends.js'
 
 // Whether to enable mock data.
 // if (process.env.NODE_ENV === 'development') {
