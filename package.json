@@ -10,7 +10,7 @@
   "dependencies": {
     "element-ui": "^2.5.4",
     "vue": "^2.5.22",
-    "vue-element-extends": "^0.1.1",
+    "vue-element-extends": "^0.1.2",
     "vue-i18n": "^8.0.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
