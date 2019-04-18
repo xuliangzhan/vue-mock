@@ -5,7 +5,7 @@
 
     <el-button size="mini" @click="deleteListEvent()">删除选中</el-button>
 
-    <el-table
+    <elx-table
       :data="list"
       stripe
       border
@@ -13,44 +13,44 @@
       style="width: 100%"
       @selection-change="handleSelectionChange"
       :edit-config="{trigger: 'click', mode: 'cell'}">
-      <el-table-column
+      <elx-table-column
         type="selection"
         width="55">
-      </el-table-column>
-      <el-table-column
+      </elx-table-column>
+      <elx-table-column
         prop="id"
         label="ID"
         width="80">
-      </el-table-column>
-      <el-table-column
+      </elx-table-column>
+      <elx-table-column
         prop="name"
-        label="姓名
-        show-overflow-tooltip">
-      </el-table-column>
-      <el-table-column
+        label="姓名"
+        show-overflow-tooltip>
+      </elx-table-column>
+      <elx-table-column
         prop="age"
         label="年龄">
-      </el-table-column>
-      <el-table-column
+      </elx-table-column>
+      <elx-table-column
         prop="email"
         label="邮箱">
-      </el-table-column>
-      <el-table-column
+      </elx-table-column>
+      <elx-table-column
         prop="createDate"
         label="创建日期"
         :formatter="formatColumnDate">
-      </el-table-column>
-      <el-table-column
+      </elx-table-column>
+      <elx-table-column
         prop="updateTime"
         label="最后更新时间"
         :formatter="formatColumnDate">
-      </el-table-column>
-      <el-table-column
+      </elx-table-column>
+      <elx-table-column
         prop="describe"
         label="备注"
         show-overflow-tooltip>
-      </el-table-column>
-      <el-table-column
+      </elx-table-column>
+      <elx-table-column
         fixed="right"
         label="操作"
         width="120">
@@ -62,8 +62,8 @@
             删除
           </el-button>
         </template>
-      </el-table-column>
-    </el-table>
+      </elx-table-column>
+    </elx-table>
   </div>
 </template>
 
@@ -131,7 +131,7 @@ export default {
           type: 'warning'
         }).then(() => {
           this.loading = true
-          XEAjax.postJSON('/api/user/delete', { removeRecords: this.multipleSelection }).then(data => {
+          XEAjax.postJSON('/api/user/save', { removeRecords: this.multipleSelection }).then(data => {
             Message({
               type: 'success',
               message: '删除成功!'

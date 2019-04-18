@@ -9,7 +9,7 @@
     <el-button size="mini" @click="saveEvent()">保存</el-button>
     <el-button size="mini" @click="$refs.editable.exportCsv({filename: 'user.csv'})">导出数据</el-button>
 
-    <el-editable
+    <elx-editable
       ref="editable"
       class="user-table"
       :data="list"
@@ -21,49 +21,49 @@
       :row-class-name="tableRowClassName"
       :edit-rules="validRules"
       @selection-change="handleSelectionChange">
-      <el-editable-column
+      <elx-editable-column
         type="selection"
         width="55">
-      </el-editable-column>
-      <el-editable-column
+      </elx-editable-column>
+      <elx-editable-column
         prop="id"
         label="ID"
         width="80">
-      </el-editable-column>
-      <el-editable-column
+      </elx-editable-column>
+      <elx-editable-column
         prop="name"
         label="姓名"
         show-overflow-tooltip
         :edit-render="{name: 'ElInput', attrs: {placeholder: '请输入姓名！'}}">
-      </el-editable-column>
-      <el-editable-column
+      </elx-editable-column>
+      <elx-editable-column
         prop="age"
         label="年龄"
         align="center"
         :edit-render="{name: 'ElInputNumber', attrs: {placeholder: '请输入年龄！'}}">
-      </el-editable-column>
-      <el-editable-column
+      </elx-editable-column>
+      <elx-editable-column
         prop="email"
         label="邮箱"
         :edit-render="{name: 'ElInput', attrs: {placeholder: '请输入邮箱！'}}">
-      </el-editable-column>
-      <el-editable-column
+      </elx-editable-column>
+      <elx-editable-column
         prop="createDate"
         label="创建日期"
         :formatter="formatColumnDate">
-      </el-editable-column>
-      <el-editable-column
+      </elx-editable-column>
+      <elx-editable-column
         prop="updateTime"
         label="最后更新时间"
         :formatter="formatColumnDate">
-      </el-editable-column>
-      <el-editable-column
+      </elx-editable-column>
+      <elx-editable-column
         prop="describe"
         label="备注"
         show-overflow-tooltip
         :edit-render="{name: 'ElInput'}">
-      </el-editable-column>
-    </el-editable>
+      </elx-editable-column>
+    </elx-editable>
 
     <el-pagination
       class="my-pagination"

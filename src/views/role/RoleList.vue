@@ -5,43 +5,43 @@
 
     <el-button size="mini" @click="deleteListEvent()">删除选中</el-button>
 
-    <el-table
+    <elx-table
       :data="list"
       stripe
       border
       size="small"
       style="width: 100%"
       @selection-change="handleSelectionChange">
-      <el-table-column
+      <elx-table-column
         type="selection"
         width="55">
-      </el-table-column>
-      <el-table-column
+      </elx-table-column>
+      <elx-table-column
         prop="id"
         label="ID"
         width="80">
-      </el-table-column>
-      <el-table-column
+      </elx-table-column>
+      <elx-table-column
         prop="name"
         label="角色名称"
         show-overflow-tooltip>
-      </el-table-column>
-      <el-table-column
+      </elx-table-column>
+      <elx-table-column
         prop="createDate"
         label="创建日期"
         :formatter="formatColumnDate">
-      </el-table-column>
-      <el-table-column
+      </elx-table-column>
+      <elx-table-column
         prop="updateTime"
         label="最后更新时间"
         :formatter="formatColumnDate">
-      </el-table-column>
-      <el-table-column
+      </elx-table-column>
+      <elx-table-column
         prop="describe"
         label="说明"
         show-overflow-tooltip>
-      </el-table-column>
-      <el-table-column
+      </elx-table-column>
+      <elx-table-column
         fixed="right"
         label="操作"
         width="120">
@@ -53,8 +53,8 @@
             删除
           </el-button>
         </template>
-      </el-table-column>
-    </el-table>
+      </elx-table-column>
+    </elx-table>
   </div>
 </template>
 
@@ -122,7 +122,7 @@ export default {
           type: 'warning'
         }).then(() => {
           this.loading = true
-          XEAjax.postJSON('/api/role/delete', { removeRecords: this.multipleSelection }).then(data => {
+          XEAjax.postJSON('/api/role/save', { removeRecords: this.multipleSelection }).then(data => {
             Message({
               type: 'success',
               message: '删除成功!'

@@ -9,7 +9,7 @@
     <el-button size="mini" @click="saveEvent()">保存</el-button>
     <el-button size="mini" @click="$refs.editable.exportCsv({filename: 'role.csv'})">导出数据</el-button>
 
-    <el-editable
+    <elx-editable
       ref="editable"
       class="role-table"
       stripe
@@ -21,38 +21,38 @@
       @selection-change="handleSelectionChange"
       :edit-rules="validRules"
       :edit-config="{trigger: 'click', mode: 'cell'}">
-      <el-editable-column
+      <elx-editable-column
         type="selection"
         width="55">
-      </el-editable-column>
-      <el-editable-column
+      </elx-editable-column>
+      <elx-editable-column
         prop="id"
         label="ID"
         width="80">
-      </el-editable-column>
-      <el-editable-column
+      </elx-editable-column>
+      <elx-editable-column
         prop="name"
         label="角色名称"
         show-overflow-tooltip
         :edit-render="{name: 'ElInput', attrs: {placeholder: '请输入角色名称！'}}">
-      </el-editable-column>
-      <el-editable-column
+      </elx-editable-column>
+      <elx-editable-column
         prop="createDate"
         label="创建日期"
         :formatter="formatColumnDate">
-      </el-editable-column>
-      <el-editable-column
+      </elx-editable-column>
+      <elx-editable-column
         prop="updateTime"
         label="最后更新时间"
         :formatter="formatColumnDate">
-      </el-editable-column>
-      <el-editable-column
+      </elx-editable-column>
+      <elx-editable-column
         prop="describe"
         label="说明"
         show-overflow-tooltip
         :edit-render="{name: 'ElInput'}">
-      </el-editable-column>
-    </el-editable>
+      </elx-editable-column>
+    </elx-editable>
 
     <el-pagination
       class="my-pagination"
