@@ -1,69 +1,60 @@
 <template>
-  <div
-    class="home"
-    v-loading="loading">
+  <div class="home">
 
-    <el-button size="mini" @click="deleteListEvent()">删除选中</el-button>
+    <button @click="deleteListEvent()">删除选中</button>
 
-    <elx-table
+    <vxe-table
       :data="list"
       stripe
       border
-      size="small"
-      style="width: 100%"
-      @selection-change="handleSelectionChange"
-      :edit-config="{trigger: 'click', mode: 'cell'}">
-      <elx-table-column
+      highlight-hover-row
+      @select-change="handleSelectionChange">
+      <vxe-table-column
         type="selection"
         width="55">
-      </elx-table-column>
-      <elx-table-column
+      </vxe-table-column>
+      <vxe-table-column
         prop="id"
         label="ID"
         width="80">
-      </elx-table-column>
-      <elx-table-column
+      </vxe-table-column>
+      <vxe-table-column
         prop="name"
         label="姓名"
-        show-overflow-tooltip>
-      </elx-table-column>
-      <elx-table-column
+        show-overflow>
+      </vxe-table-column>
+      <vxe-table-column
         prop="age"
         label="年龄">
-      </elx-table-column>
-      <elx-table-column
+      </vxe-table-column>
+      <vxe-table-column
         prop="email"
         label="邮箱">
-      </elx-table-column>
-      <elx-table-column
+      </vxe-table-column>
+      <vxe-table-column
         prop="createDate"
         label="创建日期"
         :formatter="formatColumnDate">
-      </elx-table-column>
-      <elx-table-column
+      </vxe-table-column>
+      <vxe-table-column
         prop="updateTime"
         label="最后更新时间"
         :formatter="formatColumnDate">
-      </elx-table-column>
-      <elx-table-column
+      </vxe-table-column>
+      <vxe-table-column
         prop="describe"
         label="备注"
-        show-overflow-tooltip>
-      </elx-table-column>
-      <elx-table-column
+        show-overflow>
+      </vxe-table-column>
+      <vxe-table-column
         fixed="right"
         label="操作"
         width="120">
         <template slot-scope="scope">
-          <el-button
-            @click.native.prevent="deleteEvent(scope.row)"
-            type="text"
-            size="small">
-            删除
-          </el-button>
+          <button @click.native.prevent="deleteEvent(scope.row)">删除</button>
         </template>
-      </elx-table-column>
-    </elx-table>
+      </vxe-table-column>
+    </vxe-table>
   </div>
 </template>
 
@@ -96,8 +87,8 @@ export default {
     formatColumnDate (row, column, cellValue, index) {
       return XEUtils.toDateString(cellValue)
     },
-    handleSelectionChange (val) {
-      this.multipleSelection = val
+    handleSelectionChange ({ selection }) {
+      this.multipleSelection = selection
     },
     deleteEvent (row) {
       MessageBox.confirm('此操作将永久删除该文件, 是否继续?', '提示', {

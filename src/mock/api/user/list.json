@@ -1,5 +1,5 @@
 {
-  "!return|array(50-500)": {
+  "!return|array(200-2000)": {
     "id|number": "{{ $index+1 }}",
     "name": "{{ random.repeat(['名字'],1) }}_{{ $index }}",
     "password": "{{ random.repeat('abcdefgABCDEFG',6,12) }}",

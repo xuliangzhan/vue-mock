@@ -1,80 +1,79 @@
 <template>
-  <div
-    class="home"
-    v-loading="loading">
+  <div class="home">
 
-    <el-button size="mini" @click="insertEvent()">新增</el-button>
-    <el-button size="mini" @click="pendingRemoveEvent()">标记/取消删除</el-button>
-    <el-button size="mini" @click="deleteListEvent()">删除选中</el-button>
-    <el-button size="mini" @click="saveEvent()">保存</el-button>
-    <el-button size="mini" @click="$refs.editable.exportCsv({filename: 'user.csv'})">导出数据</el-button>
+    <button @click="insertEvent()">新增</button>
+    <button @click="pendingRemoveEvent()">标记/取消删除</button>
+    <button @click="deleteListEvent()">删除选中</button>
+    <button @click="saveEvent()">保存</button>
+    <button @click="$refs.xTable.exportCsv({filename: 'user.csv'})">导出数据</button>
 
-    <elx-editable
-      ref="editable"
+    <vxe-table
+      ref="xTable"
       class="user-table"
-      :data="list"
       stripe
       border
-      height="534"
+      height="444"
       size="small"
-      style="width: 100%"
+      highlight-hover-row
+      :loading="loading"
+      :data="list"
       :row-class-name="tableRowClassName"
+      :edit-config="{trigger: 'click', mode: 'row'}"
       :edit-rules="validRules"
-      @selection-change="handleSelectionChange">
-      <elx-editable-column
+      @select-change="handleSelectionChange">
+      <vxe-table-column
         type="selection"
         width="55">
-      </elx-editable-column>
-      <elx-editable-column
+      </vxe-table-column>
+      <vxe-table-column
         prop="id"
         label="ID"
         width="80">
-      </elx-editable-column>
-      <elx-editable-column
+      </vxe-table-column>
+      <vxe-table-column
         prop="name"
         label="姓名"
-        show-overflow-tooltip
+        show-overflow
         :edit-render="{name: 'ElInput', attrs: {placeholder: '请输入姓名！'}}">
-      </elx-editable-column>
-      <elx-editable-column
+      </vxe-table-column>
+      <vxe-table-column
         prop="age"
         label="年龄"
         align="center"
         :edit-render="{name: 'ElInputNumber', attrs: {placeholder: '请输入年龄！'}}">
-      </elx-editable-column>
-      <elx-editable-column
+      </vxe-table-column>
+      <vxe-table-column
         prop="email"
         label="邮箱"
         :edit-render="{name: 'ElInput', attrs: {placeholder: '请输入邮箱！'}}">
-      </elx-editable-column>
-      <elx-editable-column
+      </vxe-table-column>
+      <vxe-table-column
         prop="createDate"
         label="创建日期"
         :formatter="formatColumnDate">
-      </elx-editable-column>
-      <elx-editable-column
+      </vxe-table-column>
+      <vxe-table-column
         prop="updateTime"
         label="最后更新时间"
         :formatter="formatColumnDate">
-      </elx-editable-column>
-      <elx-editable-column
+      </vxe-table-column>
+      <vxe-table-column
         prop="describe"
         label="备注"
-        show-overflow-tooltip
+        show-overflow
         :edit-render="{name: 'ElInput'}">
-      </elx-editable-column>
-    </elx-editable>
+      </vxe-table-column>
+    </vxe-table>
 
-    <el-pagination
+    <vxe-pagination
       class="my-pagination"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="pageVO.currentPage"
-      :page-sizes="[5, 10, 15, 20]"
+      :page-sizes="[5, 10, 15, 20, 50, 100, 200, 500, 1000, 2000, 5000]"
       :page-size="pageVO.pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
       :total="pageVO.totalResult">
-    </el-pagination>
+    </vxe-pagination>
   </div>
 </template>
 
@@ -130,7 +129,7 @@ export default {
       this.pendingRemoveList = []
       XEAjax.getJSON(`/api/user/page/list/${this.pageVO.pageSize}/${this.pageVO.currentPage}`).then(({ page, result }) => {
         this.pageVO.totalResult = page.totalResult
-        this.$refs.editable.reload(result)
+        this.list = result
         this.loading = false
       }).catch(e => {
         this.loading = false
@@ -139,8 +138,8 @@ export default {
     formatColumnDate (row, column, cellValue, index) {
       return XEUtils.toDateString(cellValue)
     },
-    handleSelectionChange (val) {
-      this.multipleSelection = val
+    handleSelectionChange ({ selection }) {
+      this.multipleSelection = selection
     },
     tableRowClassName ({ row, rowIndex }) {
       if (this.pendingRemoveList.some(item => item === row)) {
@@ -149,10 +148,9 @@ export default {
       return ''
     },
     insertEvent () {
-      if (!this.$refs.editable.checkValid().error) {
-        let row = this.$refs.editable.insert({ age: '28' })
-        this.$nextTick(() => this.$refs.editable.validateRow(row).catch(e => e))
-      }
+      this.$refs.xTable.insert({ age: '28' }).then(({ row }) => {
+        this.$refs.xTable.validateRow(row).catch(e => e)
+      })
     },
     pendingRemoveEvent () {
       let selection = this.multipleSelection
@@ -171,7 +169,7 @@ export default {
         } else if (plus) {
           this.pendingRemoveList = this.pendingRemoveList.concat(plus)
         }
-        this.$refs.editable.clearSelection()
+        this.$refs.xTable.clearSelection()
       } else {
         Message({
           type: 'info',
@@ -188,7 +186,7 @@ export default {
           type: 'warning'
         }).then(() => {
           this.loading = true
-          XEAjax.postJSON('/api/user/delete', { removeRecords: selection }).then(data => {
+          XEAjax.postJSON('/api/user/save', { removeRecords: selection }).then(data => {
             Message({
               type: 'success',
               message: '删除成功!'
@@ -211,10 +209,10 @@ export default {
       }
     },
     saveEvent () {
-      this.$refs.editable.validate(valid => {
+      this.$refs.xTable.validate(valid => {
         if (valid) {
           let removeRecords = this.pendingRemoveList
-          let { insertRecords, updateRecords } = this.$refs.editable.getAllRecords()
+          let { insertRecords, updateRecords } = this.$refs.xTable.getAllRecords()
           if (insertRecords.length || removeRecords.length || updateRecords.length) {
             this.loading = true
             XEAjax.postJSON('/api/user/save', { insertRecords, removeRecords, updateRecords }).then(data => {

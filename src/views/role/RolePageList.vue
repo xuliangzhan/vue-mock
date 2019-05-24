@@ -14,13 +14,14 @@
       class="role-table"
       stripe
       border
-      height="534"
+      height="444"
       size="small"
       style="width: 100%"
+      :data.sync="list"
       :row-class-name="tableRowClassName"
-      @selection-change="handleSelectionChange"
       :edit-rules="validRules"
-      :edit-config="{trigger: 'click', mode: 'cell'}">
+      :edit-config="{trigger: 'click', mode: 'row'}"
+      @selection-change="handleSelectionChange">
       <elx-editable-column
         type="selection"
         width="55">
@@ -59,7 +60,7 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="pageVO.currentPage"
-      :page-sizes="[5, 10, 15, 20]"
+      :page-sizes="[5, 10, 15, 20, 50, 100, 200, 500, 1000, 2000, 5000]"
       :page-size="pageVO.pageSize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="pageVO.totalResult">
@@ -76,6 +77,7 @@ export default {
   data () {
     return {
       loading: false,
+      list: [],
       multipleSelection: [],
       pendingRemoveList: [],
       pageVO: {
@@ -111,7 +113,7 @@ export default {
       this.pendingRemoveList = []
       XEAjax.getJSON(`/api/role/page/list/${this.pageVO.pageSize}/${this.pageVO.currentPage}`).then(({ page, result }) => {
         this.pageVO.totalResult = page.totalResult
-        this.$refs.editable.reload(result)
+        this.list = result
         this.loading = false
       }).catch(e => {
         this.loading = false
@@ -131,8 +133,7 @@ export default {
     },
     insertEvent () {
       if (!this.$refs.editable.checkValid().error) {
-        let row = this.$refs.editable.insert()
-        this.$nextTick(() => this.$refs.editable.validateRow(row).catch(e => e))
+        this.$refs.editable.insert().then(({ row }) => this.$refs.editable.validateRow(row).catch(e => e))
       }
     },
     pendingRemoveEvent () {
@@ -169,7 +170,7 @@ export default {
           type: 'warning'
         }).then(() => {
           this.loading = true
-          XEAjax.postJSON('/api/role/delete', { removeRecords: selection }).then(data => {
+          XEAjax.postJSON('/api/role/save', { removeRecords: selection }).then(data => {
             Message({
               type: 'success',
               message: '删除成功!'

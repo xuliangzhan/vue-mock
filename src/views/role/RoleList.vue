@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="home"
-    v-loading="loading">
+  <div class="home">
 
     <el-button size="mini" @click="deleteListEvent()">删除选中</el-button>
 

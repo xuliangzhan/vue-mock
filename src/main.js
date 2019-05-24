@@ -6,6 +6,7 @@ import i18n from './i18n'
 import './mock'
 import './plugins/element.js'
 import './plugins/element-extends.js'
+import './plugins/xtable'
 
 // Whether to enable mock data.
 // if (process.env.NODE_ENV === 'development') {
