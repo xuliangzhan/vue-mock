@@ -18,7 +18,7 @@
       :loading="loading"
       :data="list"
       :row-class-name="tableRowClassName"
-      :edit-config="{trigger: 'click', mode: 'row'}"
+      :edit-config="{key: 'id', trigger: 'click', mode: 'row'}"
       :edit-rules="validRules"
       @select-change="handleSelectionChange">
       <vxe-table-column
