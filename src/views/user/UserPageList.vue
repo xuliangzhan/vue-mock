@@ -1,11 +1,15 @@
 <template>
   <div class="home">
 
-    <button @click="insertEvent()">新增</button>
-    <button @click="pendingRemoveEvent()">标记/取消删除</button>
-    <button @click="deleteListEvent()">删除选中</button>
-    <button @click="saveEvent()">保存</button>
-    <button @click="$refs.xTable.exportCsv({filename: 'user.csv'})">导出数据</button>
+    <vxe-table-toolbar>
+      <template v-slot:buttons>
+        <vxe-button @click="insertEvent()">新增</vxe-button>
+        <vxe-button @click="pendingRemoveEvent()">标记/取消删除</vxe-button>
+        <vxe-button @click="deleteListEvent()">删除选中</vxe-button>
+        <vxe-button @click="saveEvent()">保存</vxe-button>
+        <vxe-button @click="$refs.xTable.exportCsv({filename: 'user.csv'})">导出数据</vxe-button>
+      </template>
+    </vxe-table-toolbar>
 
     <vxe-table
       ref="xTable"
@@ -13,7 +17,6 @@
       stripe
       border
       height="444"
-      size="small"
       highlight-hover-row
       :loading="loading"
       :data="list"
@@ -66,7 +69,6 @@
     </vxe-table>
 
     <vxe-pagination
-      class="my-pagination"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="pageVO.currentPage"
@@ -86,6 +88,7 @@ export default {
   data () {
     return {
       loading: false,
+      size: 'small',
       list: [],
       multipleSelection: [],
       pendingRemoveList: [],

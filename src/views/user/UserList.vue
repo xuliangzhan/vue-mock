@@ -1,7 +1,11 @@
 <template>
   <div class="home">
 
-    <button @click="deleteListEvent()">删除选中</button>
+    <vxe-table-toolbar>
+      <template v-slot:buttons>
+        <vxe-button @click="deleteListEvent()">删除选中</vxe-button>
+      </template>
+    </vxe-table-toolbar>
 
     <vxe-table
       :data="list"
