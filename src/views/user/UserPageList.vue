@@ -68,14 +68,14 @@
       </vxe-table-column>
     </vxe-table>
 
-    <vxe-pagination
+    <vxe-pager
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="pageVO.currentPage"
       :page-sizes="[5, 10, 15, 20, 50, 100, 200, 500, 1000, 2000, 5000]"
       :page-size="pageVO.pageSize"
       :total="pageVO.totalResult">
-    </vxe-pagination>
+    </vxe-pager>
   </div>
 </template>
 
