@@ -7,7 +7,7 @@
         <vxe-button @click="pendingRemoveEvent()">标记/取消删除</vxe-button>
         <vxe-button @click="deleteListEvent()">删除选中</vxe-button>
         <vxe-button @click="saveEvent()">保存</vxe-button>
-        <vxe-button @click="$refs.xTable.exportCsv({filename: 'user.csv'})">导出数据</vxe-button>
+        <vxe-button @click="$refs.xTable.exportCsv()">导出数据</vxe-button>
       </template>
     </vxe-toolbar>
 
