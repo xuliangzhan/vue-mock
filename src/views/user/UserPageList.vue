@@ -152,7 +152,7 @@ export default {
     },
     insertEvent () {
       this.$refs.xTable.insert({ age: '28' }).then(({ row }) => {
-        this.$refs.xTable.validateRow(row).catch(e => e)
+        this.$refs.xTable.validate(row).catch(e => e)
       })
     },
     pendingRemoveEvent () {
