@@ -55,7 +55,7 @@
         label="操作"
         width="120">
         <template slot-scope="scope">
-          <button @click.native.prevent="deleteEvent(scope.row)">删除</button>
+          <vxe-button @click.native.prevent="deleteEvent(scope.row)">删除</vxe-button>
         </template>
       </vxe-table-column>
     </vxe-table>
