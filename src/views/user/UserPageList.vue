@@ -13,7 +13,7 @@
 
     <vxe-table
       ref="xTable"
-      class="user-table"
+      class="vxe-table-element user-table"
       stripe
       border
       height="444"
@@ -69,12 +69,13 @@
     </vxe-table>
 
     <vxe-pager
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
+      :loading="loading"
       :current-page="pageVO.currentPage"
       :page-sizes="[5, 10, 15, 20, 50, 100, 200, 500, 1000, 2000, 5000]"
       :page-size="pageVO.pageSize"
-      :total="pageVO.totalResult">
+      :total="pageVO.totalResult"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange">
     </vxe-pager>
   </div>
 </template>
