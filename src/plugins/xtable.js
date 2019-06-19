@@ -1,6 +1,6 @@
 import Vue from 'vue'
 // import VXETable from 'vxe-table'
-// import VXETablePluginElement from 'vxe-table-plugin-element'
+import VXETablePluginElement from 'vxe-table-plugin-element'
 import 'vxe-table-plugin-element/dist/style.css'
 // import 'vxe-table/lib/index.css'
 
@@ -13,7 +13,8 @@ import {
   Loading,
   Toolbar,
   Pager,
-  Button
+  Button,
+  Checkbox
 } from 'vxe-table'
 import zhCNLocat from 'vxe-table/lib/locale/lang/zh-CN'
 
@@ -29,6 +30,7 @@ Vue.use(Loading)
 Vue.use(Toolbar)
 Vue.use(Pager)
 Vue.use(Button)
+Vue.use(Checkbox)
 
 // Vue.use(VXETable)
-// VXETable.use(VXETablePluginElement)
+VXETable.use(VXETablePluginElement)

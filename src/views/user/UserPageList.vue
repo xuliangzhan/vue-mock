@@ -89,7 +89,6 @@ export default {
   data () {
     return {
       loading: false,
-      size: 'small',
       list: [],
       multipleSelection: [],
       pendingRemoveList: [],
