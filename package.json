@@ -20,7 +20,7 @@
     "vxe-table-plugin-iview": "^1.0.1",
     "xe-ajax": "^3.5.4",
     "xe-ajax-mock": "^1.7.10",
-    "xe-utils": "^1.9.4"
+    "xe-utils": "^1.9.5"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.4.0",
