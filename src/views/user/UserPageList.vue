@@ -22,47 +22,46 @@
       :data="list"
       :row-class-name="tableRowClassName"
       :edit-config="{key: 'id', trigger: 'click', mode: 'row'}"
-      :edit-rules="validRules"
-      @select-change="handleSelectionChange">
+      :edit-rules="validRules">
       <vxe-table-column
         type="selection"
         width="55">
       </vxe-table-column>
       <vxe-table-column
-        prop="id"
-        label="ID"
+        field="id"
+        title="ID"
         width="80">
       </vxe-table-column>
       <vxe-table-column
-        prop="name"
-        label="姓名"
+        field="name"
+        title="姓名"
         show-overflow
         :edit-render="{name: 'ElInput', attrs: {placeholder: '请输入姓名！'}}">
       </vxe-table-column>
       <vxe-table-column
-        prop="age"
-        label="年龄"
+        field="age"
+        title="年龄"
         align="center"
         :edit-render="{name: 'ElInputNumber', attrs: {placeholder: '请输入年龄！'}}">
       </vxe-table-column>
       <vxe-table-column
-        prop="email"
-        label="邮箱"
+        field="email"
+        title="邮箱"
         :edit-render="{name: 'ElInput', attrs: {placeholder: '请输入邮箱！'}}">
       </vxe-table-column>
       <vxe-table-column
-        prop="createDate"
-        label="创建日期"
+        field="createTime"
+        title="创建日期"
         :formatter="formatColumnDate">
       </vxe-table-column>
       <vxe-table-column
-        prop="updateTime"
-        label="最后更新时间"
+        field="updateTime"
+        title="最后更新时间"
         :formatter="formatColumnDate">
       </vxe-table-column>
       <vxe-table-column
-        prop="describe"
-        label="备注"
+        field="describe"
+        title="备注"
         show-overflow
         :edit-render="{name: 'ElInput'}">
       </vxe-table-column>
@@ -90,7 +89,6 @@ export default {
     return {
       loading: false,
       list: [],
-      multipleSelection: [],
       pendingRemoveList: [],
       pageVO: {
         currentPage: 1,
@@ -138,11 +136,8 @@ export default {
         this.loading = false
       })
     },
-    formatColumnDate (row, column, cellValue, index) {
+    formatColumnDate ({ row, column, cellValue }) {
       return XEUtils.toDateString(cellValue)
-    },
-    handleSelectionChange ({ selection }) {
-      this.multipleSelection = selection
     },
     tableRowClassName ({ row, rowIndex }) {
       if (this.pendingRemoveList.some(item => item === row)) {
@@ -156,7 +151,7 @@ export default {
       })
     },
     pendingRemoveEvent () {
-      let selection = this.multipleSelection
+      let selection = this.$refs.xTable.getSelectRecords()
       if (selection.length) {
         let plus = []
         let minus = []
@@ -181,7 +176,7 @@ export default {
       }
     },
     deleteListEvent () {
-      let selection = this.multipleSelection
+      let selection = this.$refs.xTable.getSelectRecords()
       if (selection.length) {
         MessageBox.confirm('此操作将永久删除该文件, 是否继续?', '提示', {
           confirmButtonText: '确定',

@@ -10,8 +10,10 @@ import {
   Column,
   Header,
   Body,
+  Icon,
   Loading,
   Toolbar,
+  Export,
   Pager,
   Button,
   Checkbox
@@ -26,8 +28,10 @@ Vue.use(Table)
 Vue.use(Column)
 Vue.use(Header)
 Vue.use(Body)
+Vue.use(Icon)
 Vue.use(Loading)
 Vue.use(Toolbar)
+Vue.use(Export)
 Vue.use(Pager)
 Vue.use(Button)
 Vue.use(Checkbox)
