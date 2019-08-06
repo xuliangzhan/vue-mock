@@ -1,5 +1,5 @@
 module.exports = {
-  'presets': [
+  presets: [
     ['@vue/app', {
       polyfills: [
         'es6.promise',
@@ -9,15 +9,14 @@ module.exports = {
       ]
     }]
   ],
-  'plugins': [
+  plugins: [
     [
       'component',
       {
         'libraryName': 'element-ui',
         'styleLibraryName': 'theme-chalk'
       }
-    ]
-    ,
+    ],
     [
       'import',
       {
