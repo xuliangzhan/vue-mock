@@ -8,13 +8,15 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "echarts": "^4.2.1",
     "element-ui": "^2.8.2",
     "vue": "^2.6.10",
     "vue-element-extends": "^1.2.20",
     "vue-i18n": "^8.0.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
-    "vxe-table": "^2.4.2",
+    "vxe-table": "^2.4.5",
+    "vxe-table-plugin-charts": "^1.0.0-beta.1",
     "vxe-table-plugin-element": "^1.4.1",
     "xe-ajax": "^3.8.0",
     "xe-ajax-mock": "^1.9.1",
