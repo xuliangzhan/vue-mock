@@ -210,7 +210,7 @@ export default {
       this.$refs.xTable.validate(valid => {
         if (valid) {
           let removeRecords = this.pendingRemoveList
-          let { insertRecords, updateRecords } = this.$refs.xTable.getAllRecords()
+          let { insertRecords, updateRecords } = this.$refs.xTable.getRecordset()
           if (insertRecords.length || removeRecords.length || updateRecords.length) {
             this.loading = true
             XEAjax.postJSON('/api/user/save', { insertRecords, removeRecords, updateRecords }).then(data => {
