@@ -15,12 +15,12 @@
     "vue-i18n": "^8.0.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
-    "vxe-table": "^2.5.0",
-    "vxe-table-plugin-charts": "^1.0.0-beta.1",
-    "vxe-table-plugin-element": "^1.4.1",
-    "xe-ajax": "^3.8.0",
-    "xe-ajax-mock": "^1.9.1",
-    "xe-utils": "^2.2.1"
+    "vxe-table": "^2.5.22",
+    "vxe-table-plugin-charts": "^1.0.4",
+    "vxe-table-plugin-element": "^1.4.3",
+    "xe-ajax": "^3.8.1",
+    "xe-ajax-mock": "^1.9.2",
+    "xe-utils": "^2.2.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.4.0",
