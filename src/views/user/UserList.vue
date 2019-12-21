@@ -14,7 +14,7 @@
       ref="xTable"
       :data="list">
       <vxe-table-column
-        type="selection"
+        type="seq"
         width="55">
       </vxe-table-column>
       <vxe-table-column

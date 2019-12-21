@@ -24,7 +24,7 @@
       :edit-config="{key: 'id', trigger: 'click', mode: 'row'}"
       :edit-rules="validRules">
       <vxe-table-column
-        type="selection"
+        type="seq"
         width="55">
       </vxe-table-column>
       <vxe-table-column
